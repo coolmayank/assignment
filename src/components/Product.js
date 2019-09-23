@@ -9,118 +9,115 @@ import { ThemeProvider } from "@material-ui/styles";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import Box from "@material-ui/core/Box";
-
-
-
-
+import useStyles from "../styles/Productstyles";
 
 const theme = createMuiTheme({
   overrides: {
     typography: {
-      subtitle23 :{
-        fontSize: '8rem',
-        fontWeight: 5,
-        '@media (min-width:350x)': {
-          fontSize: '6rem',
-          
-        },
-            },
-           
-       }
-  }
-})
-const useStyles = makeStyles(theme => ({
-  button: {
-    margin: theme.spacing(1),
-    backgroundColor: "green"
-  },
-  card: {
-    display: "flex",
-   
-  },
-  details: {
-    display: "flex",
-    flexDirection: "column"
-  },
-  content: {
-    flex: "1 0 auto"
-    
-  },
-  cover: {
-    width: 150,
-    display: "flex",
-  },
-  controls: {
-    display: "flex",
-    alignItems: "center",
-    paddingLeft: theme.spacing(1),
-    paddingBottom: theme.spacing(1),
-    paddingTop: theme.spacing(0)
-  }
-}));
+      subtitlea: {
+        fontSize: "14px !important",
 
+        "@media (min-width:350x)": {
+          fontSize: "12px !important"
+        }
+      }
+    }
+  }
+});
 export default function MediaControlCard(props) {
   const classes = useStyles();
-    return (
-      <div>
-        {props.products.map((products, index) => {
-          let instock
-            if(products.is_in_stock)
-            instock= <div className={classes.controls}>
-                  <Button variant="contained" className={classes.button}>
-                     ADD TO CART
-                  </Button>
-                </div>
+  return (
+    <div>
+      {props.products.map((products, index) => {
+        var imageUrl = products.image_urls.x200;
+        if (window.innerWidth >= 650) {
+          imageUrl = products.image_urls.x240;
+        } else {
+          imageUrl = products.image_urls.x520;
+        }
+        let rating;
+        if (products.rating == "0" || products.rating == null) {
+        } else {
+          rating = (
+            <Typography
+              component="legend"
+              color="textSecondary"
+              variant="subtitle2"
+              display={"inline"}
+              style={{ marginTop: "15px", minWidth: "40px" }}
+            >
+              {products.rating} &#9733;
+            </Typography>
+          );
+        }
 
-          else  
-          instock=<div className={classes.controls}>
-                  <Button variant="contained" className={classes.button} disabled>
-                    OUT OF STOCK
-                  </Button>
-                </div>    
+        let instock;
+        if (products.is_in_stock)
+          instock = (
+            <div className={classes.controls}>
+              <Button
+                variant="contained"
+                className={classes.button}
+                size="medium"
+              >
+                ADD TO CART
+              </Button>
+            </div>
+          );
+        else
+          instock = (
+            <div className={classes.controls}>
+              <Button
+                variant="contained"
+                className={classes.button}
+                disabled
+                size="medium"
+              >
+                OUT OF STOCK
+              </Button>
+            </div>
+          );
 
-          return (
-            <Card className={classes.card}>
+        return (
+          <Card className={classes.card}>
+            <div className={classes.crdimg}>
               <CardMedia
                 className={classes.cover}
-                image={products.image_urls.x240}
+                image={imageUrl}
                 title={products.base_product_name}
               />
-              <div className={classes.details}>
-                <CardContent className={classes.content}>
-                  <ThemeProvider theme={theme}>
-                    <Typography component="h8" variant="subtitle23">
-                      {products.name}
-                    </Typography>
+            </div>
+            <div className={classes.details}>
+              <CardContent className={classes.content}>
+                <ThemeProvider theme={theme}>
+                  <Typography variant="subtitlea">{products.name}</Typography>
 
-                    <Typography variant="subtitle1" color="textSecondary">
-                     ({products.weight}{products.weight_unit})
-                    </Typography>
-                    <Typography component="h5" variant="h6">
-                     Rs. {products.final_price}
-                    </Typography>
+                  <Typography variant="subtitle2" color="textSecondary">
+                    ({products.weight}
+                    {products.weight_unit})
+                  </Typography>
+                  <Typography component="h5" variant="h6">
+                    &#8377; {products.final_price}
                     <Typography
+                      display={"inline"}
                       variant="subtitle2"
                       color="textSecondary"
-                      style={{ textDecorationLine: "line-through" }}
+                      style={{
+                        textDecorationLine: "line-through",
+                        marginLeft: "10px"
+                      }}
                     >
-                      Rs.{products.price}
+                      &#8377;{products.price}
                     </Typography>
-                  </ThemeProvider>
-                </CardContent>
-                <div>
+                  </Typography>
+                </ThemeProvider>
                 {instock}
-                </div>
-              </div>
-              <Box component="fieldset" borderColor="transparent" mt={2} ml={5}>
-                <Typography component="legend" color="textSecondary">
-                  {products.rating}
-                  <Rating name="customized-10" value={0} max={1} size="small" />
-                </Typography>
-              </Box>
-            </Card>
-          );
-        })}
-      </div>
-    );
+              </CardContent>
+            </div>
+            <div>{rating}</div>
+          </Card>
+        );
+      })}
+    </div>
+  );
 }

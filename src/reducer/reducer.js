@@ -36,8 +36,8 @@ const mainReducer = (state = defaultState, action) => {
 
     case Actions.FETCH_PRODUCT_SUCCESS:
       return {
-          ...state,
-          product_list: action.payload.data
+        ...state,
+        product_list: action.payload.data
       };
 
     case Actions.FETCH_PRODUCT_ERROR:

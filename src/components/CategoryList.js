@@ -9,7 +9,8 @@ import PropTypes from "prop-types";
 import { fetchData, fetchProducts } from "../reducer/actions";
 import Title from "./Title";
 import Product from "./Product";
-
+import StyledTab from '../styles/Styledtab';
+import StyledTabs from '../styles/Styledtabs';
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -40,35 +41,7 @@ function a11yProps(index) {
   };
 }
 
-const StyledTabs = withStyles({
-  indicator: {
-    display: "flex",
-    justifyContent: "center",
-    backgroundColor: "transparent",
-    "& > div": {
-      maxWidth: 40,
-      width: "100%",
 
-      backgroundColor: ""
-    }
-  }
-})(props => <Tabs {...props} TabIndicatorProps={{ children: <div /> }} />);
-
-const StyledTab = withStyles(theme => ({
-  root: {
-    textTransform: "none",
-    color: "#fff",
-    fontWeight: theme.typography.fontWeightRegular,
-    fontSize: theme.typography.pxToRem(15),
-    marginRight: theme.spacing(1),
-    backgroundColor: "",
-    Height: "80%",
-    borderRadius: "5%",
-    "&:focus": {
-      opacity: 1
-    }
-  }
-}))(props => <Tab disableRipple {...props} />);
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -100,37 +73,42 @@ export default function ScrollableTabsButtonPrevent() {
     setValue(newValue);
   }
 
-  const handleProduct = (category_id) => {
+  const handleProduct = category_id => {
     dispatch(fetchProducts(category_id));
-  }
+  };
 
   if (data.isFetched) {
-    return (<div>
-      <Title title={data.heading} /> 
-      <div className={classes.root}>
-        <StyledTabs
-          value={value}
-          onChange={handleChange}
-          variant="scrollable"
-          scrollButtons="off"
-          aria-label="scrollable prevent tabs example"
-        >
-          {data.category_list.map((category, index) => (
-            <StyledTab
-              key={index}
-              style={{ backgroundImage: `url(${category.category_image})` }}
-              icon={category.category_name}
-              aria-label={category.category_name}
-              {...a11yProps(0)}
-              onClick={() => handleProduct(category.category_id)}
-            />
-          ))}
-        </StyledTabs>
-      </div>
-      <Product products={data.product_list.products}></Product>
+    return (
+      <div>
+        <Title title={data.heading} />
+        <div className={classes.root}>
+          <StyledTabs
+            value={value}
+            onChange={handleChange}
+            variant="scrollable"
+            scrollButtons="off"
+            aria-label="scrollable prevent tabs example"
+          >
+            {data.category_list.map((category, index) => (
+              <StyledTab
+                key={index}
+                style={{
+                  backgroundImage: `url(${category.category_image})`,
+                  height: "65px",
+                  width: "120px"
+                }}
+                icon={category.category_name}
+                aria-label={category.category_name}
+                {...a11yProps(0)}
+                onClick={() => handleProduct(category.category_id)}
+              />
+            ))}
+          </StyledTabs>
+        </div>
+        <Product products={data.product_list.products}></Product>
       </div>
     );
   } else {
-    return <div>Loading...</div>
+    return <div>Loading...</div>;
   }
 }
